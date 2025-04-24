@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'PIN', defaultValue: '', description: 'ATM PIN (Leave empty to run default CI/CD flow)')
+        choice(name: 'ACTION', choices: ['none', 'balance', 'withdraw', 'deposit'], description: 'Action to perform (choose "none" for CI/CD mode)')
+        string(name: 'AMOUNT', defaultValue: '', description: 'Amount (only for withdraw/deposit)')
+    }
+
     environment {
         GIT_CREDENTIALS = credentials('github-token')
     }
@@ -15,7 +21,19 @@ pipeline {
         stage('Run ATM Script') {
             steps {
                 script {
-                    sh 'python3 atm.py 1234' // Pass a dummy PIN or secret value here
+                    if (params.PIN?.trim() && params.ACTION != 'none') {
+                        // Manual mode: run with provided params
+                        def command = "python3 atm.py ${params.PIN} ${params.ACTION}"
+                        if (params.AMOUNT?.trim()) {
+                            command += " ${params.AMOUNT}"
+                        }
+                        sh command
+                    } else {
+                        // Default CI/CD mode: fixed steps
+                        sh 'python3 atm.py 1234 balance'
+                        sh 'python3 atm.py 1234 withdraw 5000'
+                        sh 'python3 atm.py 1234 deposit 10000'
+                    }
                 }
             }
         }
