@@ -8,7 +8,7 @@ def show_balance(balance):
     else:
         print(K, "Your Current Balance Amount is:", balance)
 
-def atm(balance, pin):
+def atm_interactive(balance, pin):
     while True:
         print(K, "WELCOME TO ATM")
         print(K, "You Have Successfully Logged Into Your Account")
@@ -20,7 +20,11 @@ def atm(balance, pin):
               4 == Withdraw Money
               5 == Deposit Money
               6 == Exit From This Account""")
-        choice = int(input("Enter the number which you need from main menu: "))
+        try:
+            choice = int(input("Enter the number which you need from main menu: "))
+        except EOFError:
+            print("No input provided. Exiting.")
+            break
 
         if choice == 1:
             show_balance(balance)
@@ -109,12 +113,39 @@ def atm(balance, pin):
         else:
             print("Invalid choice, please select from the menu.")
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python atm.py <pin>")
+def atm_non_interactive(balance, pin, action=None, amount=None):
+    if action == "balance":
+        show_balance(balance)
+    elif action == "withdraw" and amount is not None:
+        if balance >= amount:
+            balance -= amount
+            print(f"You have successfully withdrawn {amount}")
+            show_balance(balance)
+        else:
+            print("Insufficient balance.")
+    elif action == "deposit" and amount is not None:
+        balance += amount
+        print(f"Amount {amount} successfully deposited.")
+        show_balance(balance)
     else:
+        print("Invalid or missing action.")
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
         try:
             user_pin = int(sys.argv[1])
-            atm(100000, user_pin)
+            atm_interactive(100000, user_pin)
         except ValueError:
             print("PIN must be an integer.")
+    elif len(sys.argv) >= 3:
+        try:
+            user_pin = int(sys.argv[1])
+            action = sys.argv[2]
+            amount = int(sys.argv[3]) if len(sys.argv) == 4 else None
+            atm_non_interactive(100000, user_pin, action, amount)
+        except ValueError:
+            print("PIN and amount must be integers.")
+    else:
+        print("Usage:")
+        print("Interactive Mode : python atm.py <pin>")
+        print("CI/CD Mode       : python atm.py <pin> <action> [amount]")
