@@ -4,7 +4,8 @@ pipeline {
     parameters {
         string(name: 'PIN', defaultValue: '', description: 'ATM PIN (Leave empty to run default CI/CD flow)')
         choice(name: 'ACTION', choices: ['none', 'balance', 'withdraw', 'deposit'], description: 'Action to perform (choose "none" for CI/CD mode)')
-        string(name: 'AMOUNT', defaultValue: '', description: 'Amount (only for withdraw/deposit)')
+        string(name: 'AMOUNT', defaultValue: '0', description: 'Amount (only for deposit)')
+        string(name: 'WITHDRAW', defaultValue: '0', description: 'Amount (only for withdraw)')
     }
 
     environment {
@@ -24,9 +25,14 @@ pipeline {
                     if (params.PIN?.trim() && params.ACTION != 'none') {
                         // Manual mode: run with provided params
                         def command = "python3 atm.py ${params.PIN} ${params.ACTION}"
-                        if (params.AMOUNT?.trim()) {
-                            command += " ${params.AMOUNT}"
+                        
+                        // Add amount for deposit or withdraw if provided
+                        if (params.ACTION == 'withdraw' && params.WITHDRAW?.trim()) {
+                            command += " ${params.WITHDRAW}"
+                        } else if (params.ACTION == 'deposit' && params.AMOUNT?.trim()) {
+                            command -= " ${params.AMOUNT}"
                         }
+
                         sh command
                     } else {
                         // Default CI/CD mode: fixed steps
