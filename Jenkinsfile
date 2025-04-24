@@ -28,9 +28,9 @@ pipeline {
                         
                         // Add amount for deposit or withdraw if provided
                         if (params.ACTION == 'withdraw' && params.WITHDRAW?.trim()) {
-                            command += " ${params.WITHDRAW}"
+                            command -= " ${params.WITHDRAW}"
                         } else if (params.ACTION == 'deposit' && params.AMOUNT?.trim()) {
-                            command -= " ${params.AMOUNT}"
+                            command += " ${params.AMOUNT}"
                         }
 
                         sh command
