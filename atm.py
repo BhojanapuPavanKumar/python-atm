@@ -1,13 +1,14 @@
+import sys
+
+K = "Mr.John"
+
 def show_balance(balance):
     if balance < 5000:
         print(K, "Your Current Balance Amount is Low:", balance)
     else:
         print(K, "Your Current Balance Amount is:", balance)
 
-def atm():
-    balance = 100000
-    pin = int(input("Enter Your Pin (To Enter into your ACCOUNT): "))
-    
+def atm(balance, pin):
     while True:
         print(K, "WELCOME TO ATM")
         print(K, "You Have Successfully Logged Into Your Account")
@@ -108,5 +109,12 @@ def atm():
         else:
             print("Invalid choice, please select from the menu.")
 
-K = "Mr.John"
-atm()
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python atm.py <pin>")
+    else:
+        try:
+            user_pin = int(sys.argv[1])
+            atm(100000, user_pin)
+        except ValueError:
+            print("PIN must be an integer.")

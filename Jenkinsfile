@@ -15,7 +15,7 @@ pipeline {
         stage('Run ATM Script') {
             steps {
                 script {
-                    sh 'python3 atm.py'
+                    sh 'python3 atm.py 1234' // Pass a dummy PIN or secret value here
                 }
             }
         }
