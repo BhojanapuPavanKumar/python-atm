@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/BhojanapuPavanKumar/python-atm.git'
+                git url: 'https://github.com/BhojanapuPavanKumar/python-atm.git'  credentialsId: 'github-token'
             }
         }
 
