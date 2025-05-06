@@ -7,11 +7,13 @@ pipeline {
         string(name: 'AMOUNT', defaultValue: '0', description: 'Amount (for deposit or withdraw)')
     }
 
-    environment {
-        PATH = "/usr/bin/python3:$PATH" // Adjust if needed based on your Python location
-    }
-
     stages {
+        stage('Check Python3 Location') {
+            steps {
+                sh 'which python3' // This will show the path where python3 is installed
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 git url: 'https://github.com/BhojanapuPavanKumar/python-atm.git'
