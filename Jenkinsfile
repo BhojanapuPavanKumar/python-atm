@@ -7,13 +7,11 @@ pipeline {
         string(name: 'AMOUNT', defaultValue: '0', description: 'Amount (for deposit or withdraw)')
     }
 
-    stages {
-        stage('Check Python3 Version') {
-            steps {
-                sh 'python3 --version' // This will show if python3 is available in the Jenkins environment
-            }
-        }
+    environment {
+        PATH = "/usr/bin/python3:$PATH" // Adjust if needed based on your Python location
+    }
 
+    stages {
         stage('Clone Repository') {
             steps {
                 git url: 'https://github.com/BhojanapuPavanKumar/python-atm.git'
