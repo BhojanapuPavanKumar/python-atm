@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.10' // Use an official Python image
+        }
+    }
 
     parameters {
         string(name: 'PIN', defaultValue: '', description: 'ATM PIN (Leave empty to run default CI/CD flow)')
@@ -21,16 +25,14 @@ pipeline {
         stage('Run ATM Script') {
             steps {
                 script {
-                    // Manual mode: run based on user input
                     if (params.PIN?.trim() && params.ACTION != 'none') {
                         def amount = params.AMOUNT?.trim()
 
-                        // Validate amount if required
                         if (params.ACTION in ['withdraw', 'deposit'] && (!amount.isInteger() || amount.toInteger() <= 0)) {
                             error("Invalid amount provided for ${params.ACTION}. Please enter a positive number.")
                         }
 
-                        def command = "python3 atm.py ${params.PIN} ${params.ACTION}"
+                        def command = "python atm.py ${params.PIN} ${params.ACTION}"
                         if (params.ACTION in ['withdraw', 'deposit']) {
                             command += " ${amount}"
                         }
@@ -38,11 +40,10 @@ pipeline {
                         echo "Executing: ${command}"
                         sh command
                     } else {
-                        // Default CI/CD flow
                         echo "Running default CI/CD pipeline steps"
-                        sh 'python3 atm.py 1234 balance'
-                        sh 'python3 atm.py 1234 withdraw 5000'
-                        sh 'python3 atm.py 1234 deposit 10000'
+                        sh 'python atm.py 1234 balance'
+                        sh 'python atm.py 1234 withdraw 5000'
+                        sh 'python atm.py 1234 deposit 10000'
                     }
                 }
             }
