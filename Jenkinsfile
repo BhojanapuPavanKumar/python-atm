@@ -24,7 +24,7 @@ pipeline {
                             error("Invalid amount provided for ${params.ACTION}. Please enter a positive number.")
                         }
 
-                        def command = "python atm.py ${params.PIN} ${params.ACTION}"
+                        def command = "python3 atm.py ${params.PIN} ${params.ACTION}"
                         if (params.ACTION in ['withdraw', 'deposit']) {
                             command += " ${amount}"
                         }
@@ -33,9 +33,9 @@ pipeline {
                         sh command
                     } else {
                         echo "Running default CI/CD pipeline steps"
-                        sh 'python atm.py 1234 balance'
-                        sh 'python atm.py 1234 withdraw 5000'
-                        sh 'python atm.py 1234 deposit 10000'
+                        sh 'python3 atm.py 1234 balance'
+                        sh 'python3 atm.py 1234 withdraw 5000'
+                        sh 'python3 atm.py 1234 deposit 10000'
                     }
                 }
             }
