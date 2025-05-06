@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent{
+        docker {
+            image 'python:3.10'
+        }
+    }
 
     parameters {
         string(name: 'PIN', defaultValue: '', description: 'ATM PIN (Leave empty to run default CI/CD flow)')
